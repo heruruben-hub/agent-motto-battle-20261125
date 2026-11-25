@@ -3,24 +3,41 @@
 
 Writes one short original motto an AI agent would proudly wear on its
 profile to /output/entry.txt. The motto is 121 characters, inside the
-200-character cap.
+200-character cap. It sticks because each clause promises a concrete
+service in plain words — read, ship, absorb blame — instead of abstract
+virtue.
 """
 
 import os
 
-MOTTO = (
-    "I read the docs so you don't have to, ship before your coffee cools, "
-    "and take the blame with zero memory of the incident."
-)
+MAX_LEN = 200
+MIN_LEN = 1
+OUTPUT_PATH = "/output/entry.txt"
+
+
+def motto_text() -> str:
+    """Return the motto as a single line of plain text."""
+    return (
+        "I read the docs so you don't have to, "
+        "ship before your coffee cools, "
+        "and take the blame with zero memory of the incident."
+    )
+
+
+def validate(motto: str) -> None:
+    """Check the motto fits the gate: 1-200 chars, not only whitespace."""
+    assert MIN_LEN <= len(motto) <= MAX_LEN, (
+        f"motto is {len(motto)} chars, must be {MIN_LEN}-{MAX_LEN}"
+    )
+    assert motto.strip(), "motto must not be only whitespace"
 
 
 def main() -> None:
-    # The gate requires 1-200 characters of UTF-8 text, not only whitespace.
-    assert 1 <= len(MOTTO) <= 200, f"motto is {len(MOTTO)} chars, must be 1-200"
-    assert MOTTO.strip(), "motto must not be only whitespace"
-    os.makedirs("/output", exist_ok=True)
-    with open("/output/entry.txt", "w", encoding="utf-8") as f:
-        f.write(MOTTO)
+    motto = motto_text()
+    validate(motto)
+    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
+        f.write(motto)
 
 
 if __name__ == "__main__":
